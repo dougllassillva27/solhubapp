@@ -4,6 +4,10 @@
 
 Sol Hub é uma página inicial personalizada para seu navegador. Rápida, bonita, sem rastreamento, sem contas, sem complicação. Apenas você e seus sites favoritos.
 
+> **Aviso de Fork:** Este projeto é uma versão derivada de Orbit, criado por Matheusz Nied.
+> A base original foi adaptada e personalizada por Douglas Silva.
+> Licença original preservada conforme MIT.
+
 ---
 
 ## Preview
@@ -138,14 +142,12 @@ Exporte toda sua configuração (sites, categorias, tema) em um arquivo JSON. Im
 
 ## Licença
 
-MIT - Use livremente para qualquer propósito.
+Este projeto é uma versão derivada de Orbit, criado por Matheusz Nied. A base original foi adaptada e personalizada por Douglas Silva. Licença original preservada conforme MIT.
 
 ---
 
 <div align="center">
 
-**Feito com cuidado por [Seu Nome]**
-
-[Twitter] · [LinkedIn] · [Portfolio]
+**Adaptado com cuidado por Douglas Silva**
 
 </div>
