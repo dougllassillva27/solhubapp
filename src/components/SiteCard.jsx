@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Pencil, Trash2 } from 'lucide-react';
@@ -45,6 +45,10 @@ export default function SiteCard({ site }) {
   const [currentUrlIndex, setCurrentUrlIndex] = useState(0);
   const [imgFailed, setImgFailed] = useState(() => calcularUrls(dbUrl).length === 0);
 
+  const timerRef = useRef(null);
+  const isLongPressRef = useRef(false);
+  const isTouchRef = useRef(false);
+
   // Reage a mudança de URL, customIcon ou favicon do banco (carregado assincronamente)
   useEffect(() => {
     const urls = calcularUrls(dbUrl);
@@ -54,6 +58,13 @@ export default function SiteCard({ site }) {
   }, [site.url, site.customIcon, dbUrl]);
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: site.id });
+
+  useEffect(() => {
+    if (isDragging) {
+      if (timerRef.current) clearTimeout(timerRef.current);
+      setShowActions(false);
+    }
+  }, [isDragging]);
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -73,7 +84,61 @@ export default function SiteCard({ site }) {
     confirmDeleteSite(site.id);
   };
 
-  const handleClick = () => {
+  const handleMouseEnter = () => {
+    if (isTouchRef.current || isDragging) return;
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      setShowActions(true);
+    }, 1000);
+  };
+
+  const handleMouseLeave = () => {
+    if (isTouchRef.current) return;
+    if (timerRef.current) clearTimeout(timerRef.current);
+    setShowActions(false);
+  };
+
+  const handleTouchStart = () => {
+    if (isDragging) return;
+    isTouchRef.current = true;
+    if (timerRef.current) clearTimeout(timerRef.current);
+    isLongPressRef.current = false;
+    timerRef.current = setTimeout(() => {
+      setShowActions(true);
+      isLongPressRef.current = true;
+      if (window.navigator && window.navigator.vibrate) {
+        window.navigator.vibrate(50);
+      }
+    }, 800);
+  };
+
+  const handleTouchEnd = () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+  };
+
+  const handleTouchMove = () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+  };
+
+  const handleContextMenu = (e) => {
+    if (isTouchRef.current) {
+      e.preventDefault();
+    }
+  };
+
+  const handleClick = (e) => {
+    if (isLongPressRef.current) {
+      e.preventDefault();
+      e.stopPropagation();
+      isLongPressRef.current = false;
+      return;
+    }
+    if (showActions && isTouchRef.current) {
+      e.preventDefault();
+      e.stopPropagation();
+      setShowActions(false);
+      return;
+    }
     window.open(site.url, '_blank');
   };
 
@@ -105,8 +170,12 @@ export default function SiteCard({ site }) {
       ref={setNodeRef}
       style={style}
       className="relative group flex flex-col items-center"
-      onMouseEnter={() => setShowActions(true)}
-      onMouseLeave={() => setShowActions(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      onTouchMove={handleTouchMove}
+      onContextMenu={handleContextMenu}
       {...attributes}
       {...listeners}
     >
@@ -145,13 +214,13 @@ export default function SiteCard({ site }) {
         <div className="absolute -top-2 -right-2 flex flex-col gap-1.5 animate-slideIn z-20">
           <button
             onClick={handleEdit}
-            className="p-2 bg-card/90 backdrop-blur-sm border border-border rounded-xl text-muted hover:text-accent hover:border-accent transition-all hover:scale-110 shadow-lg"
+            className="p-2 bg-amber-500 border border-amber-600 rounded-xl text-white hover:bg-amber-600 transition-all hover:scale-110 shadow-lg"
           >
             <Pencil size={14} />
           </button>
           <button
             onClick={handleDelete}
-            className="p-2 bg-card/90 backdrop-blur-sm border border-border rounded-xl text-muted hover:text-red-500 hover:border-red-500 transition-all hover:scale-110 shadow-lg"
+            className="p-2 bg-red-500 border border-red-600 rounded-xl text-white hover:bg-red-600 transition-all hover:scale-110 shadow-lg"
           >
             <Trash2 size={14} />
           </button>
