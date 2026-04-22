@@ -283,7 +283,7 @@ export default function SettingsModal() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors ${
+                className={`flex items-center gap-2 px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors outline-none focus:outline-none ${
                   activeTab === tab.id ? 'text-accent border-b-2 border-accent' : 'text-muted hover:text-text'
                 }`}
               >

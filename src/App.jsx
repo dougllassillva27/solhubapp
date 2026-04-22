@@ -47,11 +47,11 @@ export default function App() {
         <div className="container mx-auto px-4 flex flex-col min-h-[85vh]">
           <div className="flex-1 flex flex-col pt-8">
             <div className="text-center animate-fadeIn px-4 mt-2 sm:mt-4">
-              <h1 className="text-xl md:text-2xl font-light text-text mb-2 tracking-tight">
-                <strong className="font-semibold">Sol Hub</strong>{' '}
-                <span className="text-muted">— sua página inicial pessoal, inteligente e organizada</span>
+              <h1 className="text-xl md:text-2xl text-text mb-2 tracking-tight">
+                <strong className="font-bold">Sol Hub</strong>{' '}
+                <span className="opacity-80 font-normal">— sua página inicial pessoal, inteligente e organizada</span>
               </h1>
-              <p className="text-sm md:text-base text-muted max-w-2xl mx-auto font-light opacity-80">
+              <p className="text-sm md:text-base text-text opacity-60 max-w-2xl mx-auto">
                 Acesse seus sites, organize por categorias, busque mais rápido, acompanhe notícias e use IA em um só
                 lugar.
               </p>
