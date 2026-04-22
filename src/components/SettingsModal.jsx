@@ -116,6 +116,8 @@ export default function SettingsModal() {
     setSyncToken,
     pushToCloud,
     pullFromCloud,
+    autoSync,
+    setAutoSync,
   } = useStore();
 
   const [activeTab, setActiveTab] = useState('appearance');
@@ -524,6 +526,19 @@ export default function SettingsModal() {
                       {syncStatus.text}
                     </div>
                   )}
+
+                  <label className="flex items-center gap-3 mt-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={autoSync}
+                      onChange={(e) => setAutoSync(e.target.checked)}
+                      disabled={!syncToken}
+                      className="w-4 h-4 rounded border-border bg-bg text-accent focus:ring-accent focus:ring-offset-bg transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+                    />
+                    <span className={`text-sm ${syncToken ? 'text-text' : 'text-muted'}`}>
+                      Sincronização Automática (Eventos)
+                    </span>
+                  </label>
                 </div>
               </div>
 

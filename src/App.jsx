@@ -20,6 +20,13 @@ export default function App() {
     applyTheme(theme);
   }, [theme]);
 
+  useEffect(() => {
+    const { autoSync, syncToken, pullFromCloud } = useStore.getState();
+    if (autoSync && syncToken) {
+      pullFromCloud().catch((err) => console.error('Erro no auto-pull:', err));
+    }
+  }, []);
+
   return (
     <div className="min-h-screen relative">
       {/* Star canvas for space theme */}

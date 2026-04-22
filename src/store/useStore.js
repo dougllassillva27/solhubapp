@@ -50,11 +50,13 @@ const useStore = create((set, get) => ({
 
   // Cloud Sync
   syncToken: storage.get('sync_token') || '',
+  autoSync: storage.get('auto_sync') || false,
 
   // Actions
   setSites: (sites) => {
     storage.set('sites', sites);
     set({ sites });
+    get().triggerAutoSync();
   },
 
   addSite: (site) => {
@@ -67,18 +69,21 @@ const useStore = create((set, get) => ({
     const updatedSites = [...sites, newSite];
     storage.set('sites', updatedSites);
     set({ sites: updatedSites });
+    get().triggerAutoSync();
   },
 
   updateSite: (id, updates) => {
     const sites = get().sites.map((s) => (s.id === id ? { ...s, ...updates } : s));
     storage.set('sites', sites);
     set({ sites });
+    get().triggerAutoSync();
   },
 
   removeSite: (id) => {
     const sites = get().sites.filter((s) => s.id !== id);
     storage.set('sites', sites);
     set({ sites });
+    get().triggerAutoSync();
   },
 
   reorderSites: (newOrder) => {
@@ -107,16 +112,19 @@ const useStore = create((set, get) => ({
 
     storage.set('sites', sites);
     set({ sites });
+    get().triggerAutoSync();
   },
 
   setCategories: (categories) => {
     storage.set('categories', categories);
     set({ categories });
+    get().triggerAutoSync();
   },
 
   reorderCategories: (newOrder) => {
     storage.set('categories', newOrder);
     set({ categories: newOrder });
+    get().triggerAutoSync();
   },
 
   setDefaultCategory: (category) => {
@@ -130,6 +138,7 @@ const useStore = create((set, get) => ({
       const updated = [...categories, category];
       storage.set('categories', updated);
       set({ categories: updated });
+      get().triggerAutoSync();
     }
   },
 
@@ -149,6 +158,7 @@ const useStore = create((set, get) => ({
     if (get().activeCategory === category) {
       get().setActiveCategory('all');
     }
+    get().triggerAutoSync();
   },
 
   setActiveCategory: (category) => {
@@ -248,6 +258,11 @@ const useStore = create((set, get) => ({
     set({ syncToken: token });
   },
 
+  setAutoSync: (autoSync) => {
+    storage.set('auto_sync', autoSync);
+    set({ autoSync });
+  },
+
   exportData: () => {
     return storage.exportAll();
   },
@@ -268,10 +283,19 @@ const useStore = create((set, get) => ({
         activeCategory: storage.get('default_category') || 'all',
         deepseekApiKey: storage.get('deepseek_apikey') || '',
         syncToken: storage.get('sync_token') || '',
+        autoSync: storage.get('auto_sync') || false,
       });
       applyTheme(get().theme);
     }
     return success;
+  },
+
+  triggerAutoSync: () => {
+    if (get().autoSync && get().syncToken) {
+      get()
+        .pushToCloud()
+        .catch((err) => console.error('Auto-sync push falhou:', err));
+    }
   },
 
   pushToCloud: async () => {
