@@ -8,6 +8,7 @@ import {
   Database,
   Plus,
   Trash2,
+  Pencil,
   Download,
   Upload,
   Check,
@@ -56,7 +57,9 @@ const availableTopics = [
   { id: 'sports', label: 'Esportes' },
 ];
 
-function SortableCategoryItem({ cat, onRemove }) {
+function SortableCategoryItem({ cat, onRemove, onUpdate }) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValue, setEditValue] = useState(cat);
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: cat });
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -65,11 +68,36 @@ function SortableCategoryItem({ cat, onRemove }) {
     zIndex: isDragging ? 1 : 0,
   };
 
+  const handleSave = () => {
+    if (editValue.trim() && editValue.trim() !== cat) {
+      onUpdate(cat, editValue.trim());
+    } else {
+      setEditValue(cat);
+    }
+    setIsEditing(false);
+  };
+
+  if (isEditing) {
+    return (
+      <div className="flex items-center gap-2 px-3 py-2 bg-bg border border-accent rounded-lg">
+        <input
+          type="text"
+          autoFocus
+          value={editValue}
+          onChange={(e) => setEditValue(e.target.value)}
+          onBlur={handleSave}
+          onKeyDown={(e) => e.key === 'Enter' && handleSave()}
+          className="flex-1 bg-transparent border-none outline-none text-sm text-text"
+        />
+      </div>
+    );
+  }
+
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className="flex items-center gap-2 px-3 py-2 bg-bg border border-border rounded-lg relative"
+      className="flex items-center gap-2 px-3 py-2 bg-bg border border-border rounded-lg relative group"
     >
       <button
         type="button"
@@ -80,6 +108,13 @@ function SortableCategoryItem({ cat, onRemove }) {
         <GripVertical size={16} />
       </button>
       <span className="text-sm text-text flex-1">{cat}</span>
+      <button
+        onClick={() => setIsEditing(true)}
+        className="text-muted hover:text-accent transition-colors"
+        title="Editar categoria"
+      >
+        <Pencil size={14} />
+      </button>
       <button
         onClick={() => onRemove(cat)}
         className="text-muted hover:text-red-500 transition-colors"
@@ -113,6 +148,7 @@ export default function SettingsModal() {
     defaultCategory,
     setDefaultCategory,
     addCategory,
+    updateCategory,
     removeCategory,
     reorderCategories,
     exportData,
@@ -151,7 +187,7 @@ export default function SettingsModal() {
 
   const handleAddCategory = () => {
     if (newCategory.trim()) {
-      addCategory(newCategory.trim().toLowerCase());
+      addCategory(newCategory.trim());
       setNewCategory('');
     }
   };
@@ -517,7 +553,7 @@ export default function SettingsModal() {
                   <option value="all">Todos</option>
                   {categories.map((cat) => (
                     <option key={cat} value={cat}>
-                      {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                      {cat}
                     </option>
                   ))}
                 </select>
@@ -532,7 +568,7 @@ export default function SettingsModal() {
                   <SortableContext items={categories} strategy={verticalListSortingStrategy}>
                     <div className="flex flex-col gap-2">
                       {categories.map((cat) => (
-                        <SortableCategoryItem key={cat} cat={cat} onRemove={removeCategory} />
+                        <SortableCategoryItem key={cat} cat={cat} onRemove={removeCategory} onUpdate={updateCategory} />
                       ))}
                     </div>
                   </SortableContext>

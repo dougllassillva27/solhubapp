@@ -136,7 +136,7 @@ export default function AddSiteModal() {
             >
               {categories.map((cat) => (
                 <option key={cat} value={cat}>
-                  {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                  {cat}
                 </option>
               ))}
             </select>

@@ -196,6 +196,32 @@ const useStore = create((set, get) => ({
     }
   },
 
+  updateCategory: (oldCategory, newCategory) => {
+    const categories = get().categories;
+    if (oldCategory === newCategory) return;
+    if (categories.includes(newCategory)) return;
+
+    const updatedCategories = categories.map((c) => (c === oldCategory ? newCategory : c));
+    storage.set('categories', updatedCategories);
+
+    const updatedSites = get().sites.map((s) => (s.category === oldCategory ? { ...s, category: newCategory } : s));
+    storage.set('sites', updatedSites);
+
+    const updates = { categories: updatedCategories, sites: updatedSites };
+
+    if (get().defaultCategory === oldCategory) {
+      storage.set('default_category', newCategory);
+      updates.defaultCategory = newCategory;
+    }
+    if (get().activeCategory === oldCategory) {
+      setSessionCategory(newCategory);
+      updates.activeCategory = newCategory;
+    }
+
+    set(updates);
+    get().triggerAutoSync();
+  },
+
   removeCategory: (category) => {
     const categories = get().categories.filter((c) => c !== category);
     storage.set('categories', categories);
