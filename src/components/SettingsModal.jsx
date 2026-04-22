@@ -122,6 +122,7 @@ export default function SettingsModal() {
   } = useStore();
 
   const [activeTab, setActiveTab] = useState('appearance');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [newCategory, setNewCategory] = useState('');
   const [importStatus, setImportStatus] = useState(null);
   const [syncStatus, setSyncStatus] = useState({ loading: false, type: null, text: null });
@@ -217,6 +218,9 @@ export default function SettingsModal() {
 
   if (!settingsOpen) return null;
 
+  const activeTabObj = tabs.find((t) => t.id === activeTab) || tabs[0];
+  const ActiveTabIcon = activeTabObj.icon;
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop" onClick={closeSettings}>
       <div
@@ -234,21 +238,40 @@ export default function SettingsModal() {
         {/* Mobile Tabs (Dropdown) */}
         <div className="block sm:hidden px-6 py-4 border-b border-border">
           <div className="relative">
-            <select
-              value={activeTab}
-              onChange={(e) => setActiveTab(e.target.value)}
-              className="w-full pl-4 pr-10 py-3 bg-bg border border-border rounded-lg text-text focus:border-accent transition-colors appearance-none cursor-pointer"
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="w-full flex items-center justify-between px-4 py-3 bg-bg border border-border rounded-lg text-text focus:border-accent transition-colors"
             >
-              {tabs.map((tab) => (
-                <option key={tab.id} value={tab.id}>
-                  {tab.label}
-                </option>
-              ))}
-            </select>
-            <ChevronDown
-              size={18}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-muted pointer-events-none"
-            />
+              <div className="flex items-center gap-2">
+                <ActiveTabIcon size={18} className="text-accent" />
+                <span className="font-medium text-sm">{activeTabObj.label}</span>
+              </div>
+              <ChevronDown
+                size={18}
+                className={`text-muted transition-transform duration-200 ${mobileMenuOpen ? 'rotate-180' : ''}`}
+              />
+            </button>
+
+            {mobileMenuOpen && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-xl shadow-2xl z-50 overflow-hidden animate-fadeIn">
+                {tabs.map((tab) => {
+                  const Icon = tab.icon;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => {
+                        setActiveTab(tab.id);
+                        setMobileMenuOpen(false);
+                      }}
+                      className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors ${activeTab === tab.id ? 'bg-accent/10 text-accent' : 'text-text hover:bg-bg'}`}
+                    >
+                      <Icon size={18} className={activeTab === tab.id ? 'text-accent' : 'text-muted'} />
+                      <span className="font-medium text-sm">{tab.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
 
