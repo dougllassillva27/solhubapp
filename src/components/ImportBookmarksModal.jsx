@@ -59,7 +59,7 @@ export default function ImportBookmarksModal() {
       onClick={closeImportBookmarks}
     >
       <div
-        className="bg-card border border-border rounded-2xl w-full max-w-5xl h-[85vh] mx-4 flex flex-col animate-slideIn"
+        className="bg-card border border-border rounded-2xl w-full max-w-7xl h-[85vh] mx-4 flex flex-col animate-slideIn"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -76,7 +76,7 @@ export default function ImportBookmarksModal() {
         </div>
 
         {/* Content - Folders & Links */}
-        <div className="flex-1 overflow-y-auto p-6 grid grid-cols-1 md:grid-cols-2 gap-6 content-start">
+        <div className="flex-1 overflow-y-auto p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 content-start">
           {Object.entries(groupedBookmarks).map(([folder, bookmarks]) => {
             const allSelected = bookmarks.every((b) => selectedUrls.has(b.url));
             const someSelected = bookmarks.some((b) => selectedUrls.has(b.url));
