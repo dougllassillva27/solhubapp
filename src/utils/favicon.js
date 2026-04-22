@@ -23,16 +23,14 @@ export const getFaviconUrls = (url) => {
       }
     }
 
-    const urls = [`https://www.google.com/s2/favicons?domain=${domain}&sz=128`];
+    const urls = [
+      `https://icons.duckduckgo.com/ip3/${rootDomain}.ico`,
+      `https://www.google.com/s2/favicons?domain=${rootDomain}&sz=128`,
+    ];
 
     if (rootDomain !== domain) {
-      urls.push(`https://www.google.com/s2/favicons?domain=${rootDomain}&sz=128`);
-    }
-
-    urls.push(`https://icons.duckduckgo.com/ip3/${domain}.ico`);
-
-    if (rootDomain !== domain) {
-      urls.push(`https://icons.duckduckgo.com/ip3/${rootDomain}.ico`);
+      urls.push(`https://icons.duckduckgo.com/ip3/${domain}.ico`);
+      urls.push(`https://www.google.com/s2/favicons?domain=${domain}&sz=128`);
     }
 
     urls.push(`https://icon.horse/icon/${domain}`, `${urlObj.origin}/favicon.ico`);
