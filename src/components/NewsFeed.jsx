@@ -72,7 +72,7 @@ export default function NewsFeed() {
 
     if (data.items) {
       setNewsItems(
-        data.items.slice(0, 5).map((item) => ({
+        data.items.slice(0, 10).map((item) => ({
           title: item.title,
           url: item.link,
           source: item.author || new URL(feedUrl).hostname,
@@ -91,6 +91,12 @@ export default function NewsFeed() {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
+    const now = new Date();
+    const diffMins = Math.floor(Math.max(0, now - date) / 60000);
+    const diffHrs = Math.floor(diffMins / 60);
+
+    if (diffMins < 60) return `há ${diffMins} min`;
+    if (diffHrs < 24) return `há ${diffHrs}h`;
     return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
   };
 

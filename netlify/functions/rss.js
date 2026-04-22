@@ -13,7 +13,7 @@ export const handler = async (event) => {
     const itemRegex = /<item>([\s\S]*?)<\/item>/g;
     let match;
 
-    while ((match = itemRegex.exec(xml)) !== null && items.length < 5) {
+    while ((match = itemRegex.exec(xml)) !== null && items.length < 10) {
       const content = match[1];
 
       const getTag = (tag) => {

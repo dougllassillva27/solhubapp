@@ -47,7 +47,7 @@ export function useNews({ provider, apiKey, topics }) {
 
         if (data.items) {
           setItems(
-            data.items.slice(0, 5).map((item) => ({
+            data.items.slice(0, 10).map((item) => ({
               title: item.title,
               url: item.link,
               source: item.author || new URL(feedUrl).hostname,
