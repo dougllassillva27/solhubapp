@@ -15,6 +15,7 @@ export const getFaviconUrls = (url) => {
 
     return [
       `https://icon.horse/icon/${domain}`,
+      `https://logo.clearbit.com/${domain}`,
       `https://icons.duckduckgo.com/ip3/${domain}.ico`,
       `https://www.google.com/s2/favicons?domain=${domain}&sz=128`,
       `${urlObj.origin}/favicon.ico`,
