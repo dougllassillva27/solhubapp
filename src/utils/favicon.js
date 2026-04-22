@@ -23,17 +23,15 @@ export const getFaviconUrls = (url) => {
       }
     }
 
+    // Fontes confiáveis: Google retorna 404 real para domínios sem favicon (correto).
+    // DuckDuckGo REMOVIDO: retorna globo placeholder com HTTP 200, envenenando o cache.
     const urls = [`https://www.google.com/s2/favicons?domain=${domain}&sz=128`];
 
     if (rootDomain !== domain) {
       urls.push(`https://www.google.com/s2/favicons?domain=${rootDomain}&sz=128`);
     }
 
-    urls.push(`https://icons.duckduckgo.com/ip3/${domain}.ico`);
-    if (rootDomain !== domain) {
-      urls.push(`https://icons.duckduckgo.com/ip3/${rootDomain}.ico`);
-    }
-
+    // icon.horse como penúltimo recurso (pode ter rate limit, mas retorna 404 real)
     urls.push(`https://icon.horse/icon/${domain}`, `${urlObj.origin}/favicon.ico`);
 
     return urls;

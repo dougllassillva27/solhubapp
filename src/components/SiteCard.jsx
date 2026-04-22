@@ -82,9 +82,21 @@ export default function SiteCard({ site }) {
     }
   };
 
-  const handleImageLoad = () => {
+  const handleImageLoad = (e) => {
+    const img = e.target;
+    // Placeholder detectado: globo genérico do DuckDuckGo/fallback tem 16x16 ou menos
+    if (img.naturalWidth <= 16 && img.naturalHeight <= 16) {
+      handleImageError();
+      return;
+    }
     const currentUrl = faviconUrls[currentUrlIndex];
-    if (currentUrl && site.resolvedIcon !== currentUrl && !site.customIcon) {
+    // Só cacheia resolvedIcon de fontes confiáveis (evita envenenar com placeholders 200 OK)
+    const isFonteConfiavel =
+      currentUrl &&
+      (currentUrl.includes('google.com/s2/favicons') ||
+        currentUrl.endsWith('/favicon.ico') ||
+        currentUrl.endsWith('/favicon.png'));
+    if (isFonteConfiavel && site.resolvedIcon !== currentUrl && !site.customIcon) {
       updateSite(site.id, { resolvedIcon: currentUrl }, true);
     }
   };
@@ -111,7 +123,7 @@ export default function SiteCard({ site }) {
               alt={site.name}
               className="w-10 h-10 sm:w-14 sm:h-14 object-contain transition-transform duration-300 group-hover/card:scale-110 drop-shadow-md"
               onError={handleImageError}
-              onLoad={handleImageLoad}
+              onLoad={(e) => handleImageLoad(e)}
               referrerPolicy="no-referrer"
             />
           ) : (

@@ -27,6 +27,16 @@ export default function App() {
     }
   }, []);
 
+  // Limpeza única: remove resolvedIcon envenenado pelo DuckDuckGo (globo placeholder 200 OK)
+  useEffect(() => {
+    const { sites, updateSite } = useStore.getState();
+    sites.forEach((site) => {
+      if (site.resolvedIcon && site.resolvedIcon.includes('duckduckgo')) {
+        updateSite(site.id, { resolvedIcon: null }, true);
+      }
+    });
+  }, []);
+
   return (
     <div className="min-h-screen relative">
       {/* Star canvas for space theme */}
