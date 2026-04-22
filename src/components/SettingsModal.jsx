@@ -18,6 +18,7 @@ import {
   UploadCloud,
   DownloadCloud,
   RefreshCw,
+  ChevronDown,
 } from 'lucide-react';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import {
@@ -31,12 +32,12 @@ import useStore, { searchProviders } from '../store/useStore';
 import { themeList } from '../themes/themes';
 
 const tabs = [
-  { id: 'appearance', label: 'Theme', icon: Palette },
-  { id: 'search', label: 'Search', icon: Search },
-  { id: 'ai', label: 'AI Chat', icon: MessageSquare },
-  { id: 'news', label: 'News', icon: Newspaper },
-  { id: 'categories', label: 'Categories', icon: FolderOpen },
-  { id: 'data', label: 'Data', icon: Database },
+  { id: 'appearance', label: 'Tema', icon: Palette },
+  { id: 'search', label: 'Busca', icon: Search },
+  { id: 'ai', label: 'Chat IA', icon: MessageSquare },
+  { id: 'news', label: 'Notícias', icon: Newspaper },
+  { id: 'categories', label: 'Categorias', icon: FolderOpen },
+  { id: 'data', label: 'Dados', icon: Database },
 ];
 
 const newsProviders = [
@@ -232,17 +233,23 @@ export default function SettingsModal() {
 
         {/* Mobile Tabs (Dropdown) */}
         <div className="block sm:hidden px-6 py-4 border-b border-border">
-          <select
-            value={activeTab}
-            onChange={(e) => setActiveTab(e.target.value)}
-            className="w-full px-4 py-3 bg-bg border border-border rounded-lg text-text focus:border-accent transition-colors"
-          >
-            {tabs.map((tab) => (
-              <option key={tab.id} value={tab.id}>
-                {tab.label}
-              </option>
-            ))}
-          </select>
+          <div className="relative">
+            <select
+              value={activeTab}
+              onChange={(e) => setActiveTab(e.target.value)}
+              className="w-full pl-4 pr-10 py-3 bg-bg border border-border rounded-lg text-text focus:border-accent transition-colors appearance-none cursor-pointer"
+            >
+              {tabs.map((tab) => (
+                <option key={tab.id} value={tab.id}>
+                  {tab.label}
+                </option>
+              ))}
+            </select>
+            <ChevronDown
+              size={18}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-muted pointer-events-none"
+            />
+          </div>
         </div>
 
         {/* Desktop Tabs */}
