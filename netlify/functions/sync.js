@@ -1,19 +1,12 @@
 import { neon } from '@neondatabase/serverless';
+import crypto from 'crypto';
 
 export const handler = async (event, context) => {
   const method = event.httpMethod;
-  const token = event.headers['x-sync-token'];
+  const rawToken = event.headers['x-sync-token'];
 
-  if (!token) {
+  if (!rawToken) {
     return { statusCode: 401, body: JSON.stringify({ error: 'Senha Mestra obrigatória' }) };
-  }
-
-  if (!process.env.SYNC_PASSWORD) {
-    return { statusCode: 500, body: JSON.stringify({ error: 'SYNC_PASSWORD não configurada no servidor' }) };
-  }
-
-  if (token !== process.env.SYNC_PASSWORD) {
-    return { statusCode: 403, body: JSON.stringify({ error: 'Senha Mestra incorreta' }) };
   }
 
   if (!process.env.DATABASE_URL) {
@@ -22,10 +15,12 @@ export const handler = async (event, context) => {
 
   try {
     const sql = neon(process.env.DATABASE_URL);
-    const universalKey = 'admin_sync';
+
+    // Hasheia a senha mestra em SHA-256 para ser a chave segura da gaveta no banco
+    const userVaultKey = crypto.createHash('sha256').update(rawToken).digest('hex');
 
     if (method === 'GET') {
-      const result = await sql`SELECT data FROM solhub_sync WHERE token = ${universalKey}`;
+      const result = await sql`SELECT data FROM solhub_sync WHERE token = ${userVaultKey}`;
       if (result.length === 0) {
         return { statusCode: 200, body: JSON.stringify({ data: null }) };
       }
@@ -38,7 +33,7 @@ export const handler = async (event, context) => {
 
       await sql`
         INSERT INTO solhub_sync (token, data, updated_at) 
-        VALUES (${universalKey}, ${data}::jsonb, NOW())
+        VALUES (${userVaultKey}, ${data}::jsonb, NOW())
         ON CONFLICT (token) 
         DO UPDATE SET data = EXCLUDED.data, updated_at = NOW()
       `;

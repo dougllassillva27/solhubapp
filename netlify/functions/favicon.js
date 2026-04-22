@@ -8,14 +8,6 @@ export const handler = async (event) => {
     return { statusCode: 401, body: JSON.stringify({ error: 'Senha Mestra obrigatória' }) };
   }
 
-  if (!process.env.SYNC_PASSWORD) {
-    return { statusCode: 500, body: JSON.stringify({ error: 'SYNC_PASSWORD não configurada' }) };
-  }
-
-  if (token !== process.env.SYNC_PASSWORD) {
-    return { statusCode: 403, body: JSON.stringify({ error: 'Senha Mestra incorreta' }) };
-  }
-
   if (!process.env.DATABASE_URL) {
     return { statusCode: 500, body: JSON.stringify({ error: 'DATABASE_URL não configurada' }) };
   }
