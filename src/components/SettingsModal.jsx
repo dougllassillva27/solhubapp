@@ -324,7 +324,7 @@ export default function SettingsModal() {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop" onClick={closeSettings}>
       <div
-        className="bg-card border border-border rounded-2xl w-full max-w-4xl mx-4 max-h-[85vh] flex flex-col animate-slideIn"
+        className="bg-card border border-border rounded-2xl w-full max-w-6xl mx-4 h-[90vh] sm:h-[85vh] flex flex-col animate-slideIn"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
