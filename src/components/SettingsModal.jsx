@@ -22,6 +22,7 @@ import {
   LayoutGrid,
   ChevronDown,
   Bookmark,
+  Home,
 } from 'lucide-react';
 import {
   DndContext,
@@ -44,6 +45,7 @@ import { themeList } from '../themes/themes';
 
 const tabs = [
   { id: 'appearance', label: 'Tema', icon: Palette },
+  { id: 'home', label: 'Tela Inicial', icon: Home },
   { id: 'search', label: 'Busca', icon: Search },
   { id: 'ai', label: 'Chat IA', icon: MessageSquare },
   { id: 'news', label: 'Notícias', icon: Newspaper },
@@ -141,6 +143,8 @@ export default function SettingsModal() {
     closeSettings,
     theme,
     setTheme,
+    homeSortMethod,
+    setHomeSortMethod,
     searchProvider,
     setSearchProvider,
     openAiApiKey,
@@ -410,6 +414,27 @@ export default function SettingsModal() {
                     </button>
                   ))}
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* Home Tab */}
+          {activeTab === 'home' && (
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-sm font-medium text-muted mb-3">Ordenação da aba "Todos"</h3>
+                <select
+                  value={homeSortMethod}
+                  onChange={(e) => setHomeSortMethod(e.target.value)}
+                  className="w-full px-4 py-3 bg-bg border border-border rounded-lg text-text focus:border-accent transition-colors"
+                >
+                  <option value="manual">Manual (Drag & Drop)</option>
+                  <option value="recent">Mais Recentes (Últimos acessados)</option>
+                </select>
+                <p className="text-xs text-muted mt-2">
+                  No modo "Mais Recentes", os sites acessados sobem para o topo automaticamente na aba "Todos". O
+                  ordenamento manual (Drag & Drop) será desativado temporariamente nesta aba.
+                </p>
               </div>
             </div>
           )}

@@ -33,6 +33,9 @@ const useStore = create((set, get) => ({
   // Sites
   sites: storage.get('sites') || defaultSites,
 
+  // Tela Inicial Configs
+  homeSortMethod: storage.get('home_sort_method') || 'manual',
+
   // Favicons do banco (domain -> favicon_url)
   faviconsDb: {},
 
@@ -418,6 +421,17 @@ const useStore = create((set, get) => ({
     set({ autoSync });
   },
 
+  setHomeSortMethod: (method) => {
+    storage.set('home_sort_method', method);
+    set({ homeSortMethod: method });
+  },
+
+  registerSiteVisit: (id) => {
+    const sites = get().sites.map((s) => (s.id === id ? { ...s, lastAccessed: Date.now() } : s));
+    storage.set('sites', sites);
+    set({ sites });
+  },
+
   exportData: () => {
     return storage.exportAll();
   },
@@ -436,6 +450,7 @@ const useStore = create((set, get) => ({
         newsTopics: storage.get('news_topics') || defaultNewsTopics,
         notesContent: storage.get('notes_content') || '',
         weatherCity: storage.get('weather_city') || '',
+        homeSortMethod: storage.get('home_sort_method') || 'manual',
         defaultCategory: storage.get('default_category') || 'all',
         activeCategory: getSessionCategory() || storage.get('default_category') || 'all',
         syncToken: storage.get('sync_token') || '',

@@ -27,8 +27,9 @@ const getAvatarColor = (name) => {
   return colors[Math.abs(hash) % colors.length];
 };
 
-export default function SiteCard({ site }) {
-  const { confirmDeleteSite, openAddSite, setEditingSite, setFaviconDb, syncToken, faviconsDb } = useStore();
+export default function SiteCard({ site, disableDrag }) {
+  const { confirmDeleteSite, openAddSite, setEditingSite, setFaviconDb, syncToken, faviconsDb, registerSiteVisit } =
+    useStore();
   const [showActions, setShowActions] = useState(false);
 
   const domain = getDomain(site.url);
@@ -57,7 +58,10 @@ export default function SiteCard({ site }) {
     setImgFailed(urls.length === 0);
   }, [site.url, site.customIcon, dbUrl]);
 
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: site.id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: site.id,
+    disabled: disableDrag,
+  });
 
   useEffect(() => {
     if (isDragging) {
@@ -139,6 +143,7 @@ export default function SiteCard({ site }) {
       setShowActions(false);
       return;
     }
+    registerSiteVisit(site.id);
     window.open(site.url, '_blank');
   };
 

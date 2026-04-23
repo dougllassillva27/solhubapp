@@ -13,7 +13,7 @@ import useStore from '../store/useStore';
 import SiteCard from './SiteCard';
 
 export default function SiteGrid() {
-  const { sites, activeCategory, searchQuery, reorderSites } = useStore();
+  const { sites, activeCategory, searchQuery, reorderSites, homeSortMethod } = useStore();
   const [visibleCount, setVisibleCount] = useState(30);
 
   useEffect(() => {
@@ -38,7 +38,13 @@ export default function SiteGrid() {
   );
 
   const filteredSites = useMemo(() => {
-    let result = [...sites].sort((a, b) => a.order - b.order);
+    let result = [...sites];
+
+    if (activeCategory === 'all' && homeSortMethod === 'recent') {
+      result.sort((a, b) => (b.lastAccessed || 0) - (a.lastAccessed || 0));
+    } else {
+      result.sort((a, b) => a.order - b.order);
+    }
 
     if (activeCategory !== 'all') {
       result = result.filter((s) => s.category === activeCategory);
@@ -50,9 +56,10 @@ export default function SiteGrid() {
     }
 
     return result;
-  }, [sites, activeCategory, searchQuery]);
+  }, [sites, activeCategory, searchQuery, homeSortMethod]);
 
   const isAllCategory = activeCategory === 'all' && !searchQuery.trim();
+  const disableDrag = activeCategory === 'all' && homeSortMethod === 'recent';
   const displayedSites = isAllCategory ? filteredSites.slice(0, visibleCount) : filteredSites;
   const hasMore = isAllCategory && visibleCount < filteredSites.length;
 
@@ -78,7 +85,7 @@ export default function SiteGrid() {
         <SortableContext items={displayedSites.map((s) => s.id)} strategy={rectSortingStrategy}>
           <div className="grid grid-cols-[repeat(auto-fill,minmax(70px,1fr))] sm:grid-cols-[repeat(auto-fill,minmax(96px,1fr))] gap-x-2 gap-y-6 sm:gap-x-4 sm:gap-y-8 justify-items-center">
             {displayedSites.map((site) => (
-              <SiteCard key={site.id} site={site} />
+              <SiteCard key={site.id} site={site} disableDrag={disableDrag} />
             ))}
           </div>
         </SortableContext>
