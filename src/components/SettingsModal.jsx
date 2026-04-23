@@ -180,6 +180,8 @@ export default function SettingsModal() {
     setFutebolApiKey,
     futebolLigasFiltro,
     setFutebolLigasFiltro,
+    futebolRssUrl,
+    setFutebolRssUrl,
   } = useStore();
 
   const [activeTab, setActiveTab] = useState('appearance');
@@ -650,6 +652,17 @@ export default function SettingsModal() {
                         Busca parcial por nome de campeonato. Separe múltiplos por vírgula. Deixe vazio para usar o
                         padrão (Brasil + Libertadores/Sul-Americana). Ao alterar, o cache será limpo.
                       </p>
+                    </div>
+                    <div className="mt-6">
+                      <h3 className="text-sm font-medium text-muted mb-3">URL do RSS de Notícias</h3>
+                      <input
+                        type="text"
+                        value={futebolRssUrl}
+                        onChange={(e) => setFutebolRssUrl(e.target.value)}
+                        placeholder="https://ge.globo.com/Esportes/Rss/0,,AS0-9825,00.xml"
+                        className="w-full px-4 py-3 bg-bg border border-border rounded-lg text-text placeholder-muted focus:border-accent transition-colors"
+                      />
+                      <p className="text-xs text-muted mt-2">URL do feed RSS para exibir as notícias de futebol.</p>
                     </div>
                   </>
                 )}

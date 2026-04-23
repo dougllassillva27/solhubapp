@@ -1,6 +1,8 @@
 export const handler = async (event) => {
+  const rssUrl = event.queryStringParameters?.url || 'https://ge.globo.com/Esportes/Rss/0,,AS0-9825,00.xml';
+
   try {
-    const response = await fetch('https://ge.globo.com/rss/futebol/');
+    const response = await fetch(rssUrl);
     const xml = await response.text();
 
     const items = [];

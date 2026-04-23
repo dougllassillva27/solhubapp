@@ -70,6 +70,7 @@ const useStore = create((set, get) => ({
   futebolJogosCache: storage.get('futebol_jogos_cache') || [],
   futebolJogosCacheTime: storage.get('futebol_jogos_cache_time') || 0,
   futebolLigasFiltro: storage.get('futebol_ligas_filtro') || '',
+  futebolRssUrl: storage.get('futebol_rss_url') || 'https://ge.globo.com/Esportes/Rss/0,,AS0-9825,00.xml',
 
   // UI State
   settingsOpen: false,
@@ -399,6 +400,11 @@ const useStore = create((set, get) => ({
     set({ futebolLigasFiltro: filtro, futebolJogosCache: [], futebolJogosCacheTime: 0 });
   },
 
+  setFutebolRssUrl: (url) => {
+    storage.set('futebol_rss_url', url);
+    set({ futebolRssUrl: url });
+  },
+
   setFutebolApiKey: (key) => {
     const token = get().syncToken;
     if (token) {
@@ -484,6 +490,7 @@ const useStore = create((set, get) => ({
         notesContent: storage.get('notes_content') || '',
         weatherCity: storage.get('weather_city') || '',
         futebolLigasFiltro: storage.get('futebol_ligas_filtro') || '',
+        futebolRssUrl: storage.get('futebol_rss_url') || 'https://ge.globo.com/Esportes/Rss/0,,AS0-9825,00.xml',
         homeSortMethod: storage.get('home_sort_method') || 'manual',
         defaultCategory: storage.get('default_category') || 'all',
         activeCategory: getSessionCategory() || storage.get('default_category') || 'all',

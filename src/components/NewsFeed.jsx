@@ -105,7 +105,7 @@ export default function NewsFeed() {
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold text-text flex items-center gap-2">
           <Newspaper size={20} />
-          Notícias
+          Tecnologia
         </h2>
         <button
           onClick={fetchNews}

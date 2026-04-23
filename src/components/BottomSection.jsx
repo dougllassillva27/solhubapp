@@ -4,7 +4,7 @@ import NewsFeed from './NewsFeed';
 import FutebolTab from './FutebolTab';
 
 const tabs = [
-  { id: 'news', label: 'Notícias Gerais', icon: Newspaper },
+  { id: 'news', label: 'Notícias', icon: Newspaper },
   { id: 'futebol', label: 'Futebol', icon: Trophy },
 ];
 

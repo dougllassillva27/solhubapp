@@ -12,7 +12,10 @@ export function useFutebol() {
     setLoading((prev) => ({ ...prev, noticias: true }));
     setError((prev) => ({ ...prev, noticias: null }));
     try {
-      const response = await fetch('/.netlify/functions/futebol-noticias');
+      const state = useStore.getState();
+      const rssUrl = state.futebolRssUrl;
+      const url = `/.netlify/functions/futebol-noticias${rssUrl ? `?url=${encodeURIComponent(rssUrl)}` : ''}`;
+      const response = await fetch(url);
       if (!response.ok) {
         const errData = await response.json();
         throw new Error(errData.error || 'Falha ao buscar notícias de futebol');
