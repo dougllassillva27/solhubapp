@@ -64,10 +64,14 @@ function processarUrl(url, caminhoArquivoAtual) {
  * Substitui URLs dentro do conteúdo do arquivo usando Regex.
  */
 function processarConteudo(conteudo, caminhoArquivo) {
-  // Processa atributos HTML padrões (href, src, content)
-  let novoConteudo = conteudo.replace(/(href|src|content)=(['"])(.*?)\2/gi, (match, attr, aspas, url) => {
-    return `${attr}=${aspas}${processarUrl(url, caminhoArquivo)}${aspas}`;
-  });
+  // Processa atributos HTML e notações de objeto JS/JSON (href, src, content) com "=" ou ":"
+  let novoConteudo = conteudo.replace(
+    /(["']?)(href|src|content)\1(\s*[:=]\s*)(['"])(.*?)\4/gi,
+    (match, aspasProp, attr, oper, aspasUrl, url) => {
+      const prop = aspasProp ? `${aspasProp}${attr}${aspasProp}` : attr;
+      return `${prop}${oper}${aspasUrl}${processarUrl(url, caminhoArquivo)}${aspasUrl}`;
+    }
+  );
 
   // Processa url() do CSS
   novoConteudo = novoConteudo.replace(/url\((['"]?)(.*?)\1\)/gi, (match, aspas, url) => {
