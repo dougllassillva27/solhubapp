@@ -36,7 +36,12 @@ export const handler = async (event) => {
       jogosFiltrados = jogosFiltrados.filter((j) => {
         const nameLower = j.league.name.toLowerCase();
         const leagueId = String(j.league.id);
-        return ligasDesejadas.some((liga) => nameLower.includes(liga) || leagueId === liga);
+        return ligasDesejadas.some((liga) => {
+          if (/^\d+$/.test(liga)) {
+            return leagueId === liga;
+          }
+          return nameLower.includes(liga);
+        });
       });
     } else {
       jogosFiltrados = jogosFiltrados.filter((j) => {
