@@ -43,9 +43,9 @@ export function useFutebol() {
     }
 
     const now = Date.now();
-    const ONE_HOUR = 60 * 60 * 1000;
+    const CACHE_DURATION = 30 * 60 * 1000;
 
-    if (!force && cache && cache.length > 0 && now - cacheTime < ONE_HOUR) {
+    if (!force && cache && cache.length > 0 && now - cacheTime < CACHE_DURATION) {
       setJogos(cache);
       return;
     }

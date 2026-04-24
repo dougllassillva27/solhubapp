@@ -1,48 +1,51 @@
-import { useState, useRef, useEffect } from 'react'
-import { Search } from 'lucide-react'
-import useStore, { searchProviders } from '../store/useStore'
+import { useState, useRef, useEffect } from 'react';
+import { Search, X } from 'lucide-react';
+import useStore, { searchProviders } from '../store/useStore';
 
 export default function SearchBar() {
-  const { searchProvider, searchQuery, setSearchQuery, cycleSearchProvider, openChat, setInitialChatMessage } = useStore()
-  const [localQuery, setLocalQuery] = useState('')
-  const inputRef = useRef(null)
-  const debounceRef = useRef(null)
+  const { searchProvider, searchQuery, setSearchQuery, cycleSearchProvider, openChat, setInitialChatMessage } =
+    useStore();
+  const [localQuery, setLocalQuery] = useState('');
+  const inputRef = useRef(null);
+  const debounceRef = useRef(null);
 
-  const provider = searchProviders[searchProvider]
-
-  useEffect(() => {
-    setLocalQuery(searchQuery)
-  }, [searchQuery])
+  const provider = searchProviders[searchProvider];
 
   useEffect(() => {
-    inputRef.current?.focus()
-  }, [])
+    setLocalQuery(searchQuery);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
 
   const handleChange = (e) => {
-    const value = e.target.value
-    setLocalQuery(value)
+    const value = e.target.value;
+    setLocalQuery(value);
 
-    clearTimeout(debounceRef.current)
+    clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
-      setSearchQuery(value)
-    }, 150)
-  }
+      setSearchQuery(value);
+    }, 150);
+  };
 
   const handleKeyDown = (e) => {
     if (e.key === 'Tab') {
-      e.preventDefault()
-      cycleSearchProvider()
+      e.preventDefault();
+      cycleSearchProvider();
     } else if (e.key === 'Enter' && localQuery.trim()) {
       if (provider.type === 'ai') {
-        setInitialChatMessage(localQuery.trim())
-        setLocalQuery('')
-        setSearchQuery('')
-        openChat()
+        setInitialChatMessage(localQuery.trim());
+        setLocalQuery('');
+        setSearchQuery('');
+        openChat();
       } else {
-        window.open(provider.url + encodeURIComponent(localQuery.trim()), '_blank')
+        window.open(provider.url + encodeURIComponent(localQuery.trim()), '_blank');
+        setLocalQuery('');
+        setSearchQuery('');
       }
     }
-  }
+  };
 
   return (
     <div className="w-full max-w-2xl mx-auto px-4 mb-8 animate-fadeIn">
@@ -54,8 +57,10 @@ export default function SearchBar() {
           onClick={cycleSearchProvider}
           title="Clique ou pressione Tab para trocar"
         >
-          <span className="w-5 h-5 flex items-center justify-center rounded text-xs font-bold"
-            style={{ backgroundColor: provider.color, color: '#fff' }}>
+          <span
+            className="w-5 h-5 flex items-center justify-center rounded text-xs font-bold"
+            style={{ backgroundColor: provider.color, color: '#fff' }}
+          >
             {provider.icon}
           </span>
           <span>{provider.name}</span>
@@ -70,23 +75,54 @@ export default function SearchBar() {
           onChange={handleChange}
           onKeyDown={handleKeyDown}
           placeholder="Pesquisar ou filtrar sites..."
-          className="w-full pl-12 pr-12 py-[0.625rem] bg-card border border-border rounded-xl text-text placeholder-muted text-lg focus:border-accent transition-colors"
+          className="w-full pl-12 pr-20 py-[0.625rem] bg-card border border-border rounded-xl text-text placeholder-muted text-lg focus:border-accent transition-colors"
         />
 
         <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted pointer-events-none" />
 
-        <button
-          className="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-muted hover:text-accent transition-colors"
-          onClick={() => inputRef.current?.focus()}
-        >
-          <Search size={20} />
-        </button>
+        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
+          {localQuery && (
+            <button
+              className="p-2 text-muted hover:text-text transition-colors"
+              onClick={() => {
+                setLocalQuery('');
+                setSearchQuery('');
+                inputRef.current?.focus();
+              }}
+              title="Limpar pesquisa"
+            >
+              <X size={18} />
+            </button>
+          )}
+          <button
+            className="p-2 text-muted hover:text-accent transition-colors"
+            onClick={() => {
+              if (localQuery.trim()) {
+                if (provider.type === 'ai') {
+                  setInitialChatMessage(localQuery.trim());
+                  setLocalQuery('');
+                  setSearchQuery('');
+                  openChat();
+                } else {
+                  window.open(provider.url + encodeURIComponent(localQuery.trim()), '_blank');
+                  setLocalQuery('');
+                  setSearchQuery('');
+                }
+              } else {
+                inputRef.current?.focus();
+              }
+            }}
+          >
+            <Search size={20} />
+          </button>
+        </div>
       </div>
 
       <p className="text-center text-muted text-sm mt-2">
         <kbd className="px-1.5 py-0.5 bg-border rounded text-xs">Tab</kbd> ou clique no provedor para trocar ·
-        <kbd className="px-1.5 py-0.5 bg-border rounded text-xs ml-1">Enter</kbd> {provider.type === 'ai' ? 'para abrir o chat' : 'para pesquisar'}
+        <kbd className="px-1.5 py-0.5 bg-border rounded text-xs ml-1">Enter</kbd>{' '}
+        {provider.type === 'ai' ? 'para abrir o chat' : 'para pesquisar'}
       </p>
     </div>
-  )
+  );
 }

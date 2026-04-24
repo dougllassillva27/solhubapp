@@ -175,14 +175,23 @@ export default function SiteCard({ site, disableDrag }) {
       ref={setNodeRef}
       style={style}
       className="relative group flex flex-col items-center"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-      onTouchMove={handleTouchMove}
-      onContextMenu={handleContextMenu}
       {...attributes}
       {...listeners}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onTouchStart={(e) => {
+        handleTouchStart();
+        if (listeners?.onTouchStart) listeners.onTouchStart(e);
+      }}
+      onTouchEnd={(e) => {
+        handleTouchEnd();
+        if (listeners?.onTouchEnd) listeners.onTouchEnd(e);
+      }}
+      onTouchMove={(e) => {
+        handleTouchMove();
+        if (listeners?.onTouchMove) listeners.onTouchMove(e);
+      }}
+      onContextMenu={handleContextMenu}
     >
       <div onClick={handleClick} className="group/card relative cursor-pointer w-16 h-16 sm:w-24 sm:h-24 mb-3 mx-auto">
         {/* Glow effect */}

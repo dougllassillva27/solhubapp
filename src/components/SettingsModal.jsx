@@ -637,7 +637,7 @@ export default function SettingsModal() {
                     </p>
                     <div className="mt-4 p-3 bg-blue-500/10 border border-blue-500/30 rounded-xl text-blue-400 text-xs leading-relaxed">
                       <strong>Aviso:</strong> A API-Football gratuita permite apenas 100 requisições diárias. Para
-                      economizar sua cota, os jogos são cacheados localmente por 1 hora.
+                      economizar sua cota, os jogos são cacheados localmente por 30 minutos.
                     </div>
                     <div className="mt-6">
                       <h3 className="text-sm font-medium text-muted mb-3">Filtro de Campeonatos</h3>
@@ -662,17 +662,7 @@ export default function SettingsModal() {
                         placeholder="https://www.ogol.com.br/rss/noticias.php"
                         className="w-full px-4 py-3 bg-bg border border-border rounded-lg text-text placeholder-muted focus:border-accent transition-colors"
                       />
-                      <p className="text-xs text-muted mt-2">
-                        URL do feed RSS para exibir as notícias de futebol. Encontre outros feeds em{' '}
-                        <a
-                          href="https://ge.globo.com/Esportes/0,,GEH946-9645,00.html"
-                          target="_blank"
-                          rel="noopener"
-                          className="text-accent hover:underline"
-                        >
-                          ge.globo.com
-                        </a>
-                      </p>
+                      <p className="text-xs text-muted mt-2">URL do feed RSS para exibir as notícias de futebol.</p>
                     </div>
                   </>
                 )}
