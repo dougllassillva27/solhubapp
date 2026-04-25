@@ -14,18 +14,22 @@ export async function buscarJogosCBF() {
       },
     };
 
+    const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
+    const dia = String(now.getDate()).padStart(2, '0');
+    const mes = String(now.getMonth() + 1).padStart(2, '0');
+    const ano = now.getFullYear();
+    const dataDeHoje = `${dia}/${mes}/${ano}`;
+
     const campeonatos = [
       {
         nome: 'Brasileirão Série A',
-        url: 'https://www.cbf.com.br/futebol-brasileiro/tabelas/campeonato-brasileiro/serie-a',
+        url: `https://www.cbf.com.br/futebol-brasileiro/tabelas/campeonato-brasileiro/serie-a/${ano}`,
       },
       {
         nome: 'Brasileirão Série B',
-        url: 'https://www.cbf.com.br/futebol-brasileiro/tabelas/campeonato-brasileiro/serie-b',
+        url: `https://www.cbf.com.br/futebol-brasileiro/tabelas/campeonato-brasileiro/serie-b/${ano}`,
       },
     ];
-
-    const todayStr = new Date().toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' }).substring(0, 5); // "25/04"
 
     for (const camp of campeonatos) {
       try {
@@ -35,30 +39,30 @@ export async function buscarJogosCBF() {
         const html = await response.text();
         const $ = cheerio.load(html);
 
-        $('.swiper-slide.active .box, .aside-rodadas .box').each((i, el) => {
-          const partidaDesc = $(el).find('.partida-desc').text().trim();
+        $('[class*="gameCardContainer"]').each((i, el) => {
+          const infos = $(el).find('[class*="informations"] p').text().trim();
+          const dateMatch = infos.match(/(\d{2}\/\d{2}\/\d{4})/);
+          const dataJogo = dateMatch ? dateMatch[1] : '';
 
-          if (!partidaDesc.includes(todayStr) && !partidaDesc.toLowerCase().includes('hoje')) {
-            return;
-          }
+          if (dataJogo !== dataDeHoje) return;
 
           const mandante =
-            $(el).find('.time.pull-left .time-sigla').attr('title') ||
-            $(el).find('.time.pull-left .time-nome').text().trim();
+            $(el).find('[class*="score"] a strong').first().attr('title') ||
+            $(el).find('[class*="score"] a strong').first().text().trim();
           const visitante =
-            $(el).find('.time.pull-right .time-sigla').attr('title') ||
-            $(el).find('.time.pull-right .time-nome').text().trim();
+            $(el).find('[class*="score"] a strong').last().attr('title') ||
+            $(el).find('[class*="score"] a strong').last().text().trim();
 
           if (!mandante || !visitante) return;
 
-          const placarMandanteStr = $(el).find('.time.pull-left .bg-azul').text().trim();
-          const placarVisitanteStr = $(el).find('.time.pull-right .bg-azul').text().trim();
+          const placarMandanteStr = $(el).find('[class*="score"] > div').first().find('[class*="gol"]').text().trim();
+          const placarVisitanteStr = $(el).find('[class*="score"] > div').last().find('[class*="gol"]').text().trim();
 
-          const placarMandante = placarMandanteStr ? parseInt(placarMandanteStr, 10) : null;
-          const placarVisitante = placarVisitanteStr ? parseInt(placarVisitanteStr, 10) : null;
+          const placarMandante = placarMandanteStr !== '' ? parseInt(placarMandanteStr, 10) : null;
+          const placarVisitante = placarVisitanteStr !== '' ? parseInt(placarVisitanteStr, 10) : null;
 
-          const horarioMatch = partidaDesc.match(/\d{2}:\d{2}/);
-          const horario = horarioMatch ? horarioMatch[0] : '00:00';
+          const timeMatch = infos.match(/(\d{2}:\d{2})/);
+          const horario = timeMatch ? timeMatch[1] : '00:00';
 
           jogos.push({
             id: `cbf-${camp.nome}-${i}`,
