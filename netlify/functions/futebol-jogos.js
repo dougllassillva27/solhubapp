@@ -7,8 +7,8 @@ const parser = new Parser({
 });
 
 const MAPA_LIGAS = {
-  'Brasileirão Série A': ['Brasileirão', 'Campeonato Brasileiro', 'Serie A', 'Série A'],
-  'Brasileirão Série B': ['Serie B', 'Série B', 'Campeonato Brasileiro Série B'],
+  'Brasileirão Série A': ['Brasileirão Série A', 'Brasileiro Série A', 'Campeonato Brasileiro Série A'],
+  'Brasileirão Série B': ['Brasileirão Série B', 'Brasileiro Série B', 'Campeonato Brasileiro Série B'],
   'Copa do Brasil': ['Copa do Brasil'],
   Libertadores: ['Copa Libertadores', 'Libertadores'],
   'Sul-Americana': ['Copa Sul-Americana', 'Sul-Americana'],
