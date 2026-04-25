@@ -3,7 +3,18 @@ import Parser from 'rss-parser';
 const parser = new Parser();
 
 const fetchAndParse = async (url) => {
-  const response = await fetch(url);
+  const response = await fetch(url, {
+    headers: {
+      'User-Agent':
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      Accept: 'application/rss+xml, application/xml, text/xml, */*',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Status ${response.status} ao acessar ${url}`);
+  }
+
   const buffer = await response.arrayBuffer();
   let xml = new TextDecoder('utf-8').decode(buffer);
   if (xml.includes('encoding="ISO-8859-1"') || xml.includes('encoding="iso-8859-1"')) {
@@ -19,16 +30,22 @@ export const handler = async (event) => {
 
   try {
     const [feedProx, feedRes] = await Promise.all([
-      fetchAndParse(rssProx).catch(() => ({ items: [] })),
-      fetchAndParse(rssRes).catch(() => ({ items: [] })),
+      fetchAndParse(rssProx).catch((e) => {
+        console.error('Erro ProxJogos:', e.message);
+        return { items: [] };
+      }),
+      fetchAndParse(rssRes).catch((e) => {
+        console.error('Erro Resultados:', e.message);
+        return { items: [] };
+      }),
     ]);
 
     const jogos = [];
 
     // Próximos Jogos (Agendados)
     feedProx.items.forEach((item, index) => {
-      // Ex: [Brasileirão] Flamengo x Vasco
-      const match = item.title.match(/^\[(.*?)\]\s+(.*?)\s+(?:x|-|vs)\s+(.*)$/i);
+      // Ex: [Brasileirão] Flamengo x Vasco OU Flamengo vs Vasco
+      const match = item.title.match(/^(?:\[(.*?)\]\s*)?(.*?)\s+(?:x|v|vs|-)\s+(.*)$/i);
       if (match) {
         let horarioFormatado = '';
         try {
@@ -44,13 +61,13 @@ export const handler = async (event) => {
 
         jogos.push({
           id: `prox-${index}`,
-          campeonato: match[1].trim(),
+          campeonato: match[1] ? match[1].trim() : 'Futebol',
           rodada: '',
           horario: horarioFormatado || '00:00',
           status: 'NS',
           minuto: null,
-          mandante: { nome: match[2].trim(), escudo: null },
-          visitante: { nome: match[3].trim(), escudo: null },
+          mandante: { nome: match[2] ? match[2].trim() : 'Desconhecido', escudo: null },
+          visitante: { nome: match[3] ? match[3].trim() : 'Desconhecido', escudo: null },
           placar: { mandante: null, visitante: null },
         });
       }
@@ -58,12 +75,12 @@ export const handler = async (event) => {
 
     // Resultados (Encerrados)
     feedRes.items.forEach((item, index) => {
-      // Ex: [Brasileirão] Flamengo 2-1 Vasco ou Flamengo 2 - 1 Vasco
-      const match = item.title.match(/^\[(.*?)\]\s+(.*?)\s+(\d+)\s*-\s*(\d+)\s+(.*)$/i);
+      // Ex: [Brasileirão] Flamengo 2-1 Vasco OU Flamengo 2 x 1 Vasco
+      const match = item.title.match(/^(?:\[(.*?)\]\s*)?(.*?)\s+(\d+)\s*(?:x|-)\s*(\d+)\s+(.*)$/i);
       if (match) {
         jogos.push({
           id: `res-${index}`,
-          campeonato: match[1].trim(),
+          campeonato: match[1] ? match[1].trim() : 'Futebol',
           rodada: '',
           horario: 'Encerrado',
           status: 'FT',
