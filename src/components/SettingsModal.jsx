@@ -178,10 +178,6 @@ export default function SettingsModal() {
     openImportBookmarks,
     futebolRssUrl,
     setFutebolRssUrl,
-    futebolRssProxJogos,
-    setFutebolRssProxJogos,
-    futebolRssResultados,
-    setFutebolRssResultados,
   } = useStore();
 
   const [activeTab, setActiveTab] = useState('appearance');
@@ -608,11 +604,6 @@ export default function SettingsModal() {
           {/* Futebol Tab */}
           {activeTab === 'futebol' && (
             <div className="space-y-6">
-              <div className="p-4 bg-blue-500/10 border border-blue-500/30 rounded-xl text-blue-400 text-sm">
-                <strong>Nova Fonte de Dados:</strong> O sistema de jogos agora utiliza os feeds RSS públicos do{' '}
-                <strong>Ogol</strong> para maior estabilidade e cobertura global, sem a necessidade de chaves de API.
-              </div>
-
               <div>
                 <h3 className="text-sm font-medium text-muted mb-3">URL do RSS de Notícias</h3>
                 <input
@@ -620,28 +611,6 @@ export default function SettingsModal() {
                   value={futebolRssUrl}
                   onChange={(e) => setFutebolRssUrl(e.target.value)}
                   placeholder="https://www.ogol.com.br/rss/noticias.php"
-                  className="w-full px-4 py-3 bg-bg border border-border rounded-lg text-text placeholder-muted focus:border-accent transition-colors"
-                />
-              </div>
-
-              <div>
-                <h3 className="text-sm font-medium text-muted mb-3">URL do RSS de Próximos Jogos</h3>
-                <input
-                  type="text"
-                  value={futebolRssProxJogos}
-                  onChange={(e) => setFutebolRssProxJogos(e.target.value)}
-                  placeholder="https://www.ogol.com.br/rss/proxjogos.php"
-                  className="w-full px-4 py-3 bg-bg border border-border rounded-lg text-text placeholder-muted focus:border-accent transition-colors"
-                />
-              </div>
-
-              <div>
-                <h3 className="text-sm font-medium text-muted mb-3">URL do RSS de Resultados</h3>
-                <input
-                  type="text"
-                  value={futebolRssResultados}
-                  onChange={(e) => setFutebolRssResultados(e.target.value)}
-                  placeholder="https://www.ogol.com.br/rss/resultados.php"
                   className="w-full px-4 py-3 bg-bg border border-border rounded-lg text-text placeholder-muted focus:border-accent transition-colors"
                 />
               </div>

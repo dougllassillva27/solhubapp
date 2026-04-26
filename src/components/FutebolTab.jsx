@@ -1,7 +1,6 @@
-import { Trophy, Newspaper, Loader2, AlertCircle, RefreshCw } from 'lucide-react';
+import { Newspaper, Loader2, AlertCircle, RefreshCw } from 'lucide-react';
 import { useFutebol } from '../hooks/useFutebol';
 import NoticiasFutebol from './NoticiasFutebol';
-import JogosHoje from './JogosHoje';
 
 const LoadingState = () => (
   <div className="flex justify-center items-center p-8 bg-card border border-border rounded-xl">

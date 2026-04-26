@@ -66,11 +66,7 @@ const useStore = create((set, get) => ({
   initialChatMessage: null,
 
   // Futebol (Hubly Futebol)
-  futebolJogosCache: storage.get('futebol_jogos_cache') || [],
-  futebolJogosCacheTime: storage.get('futebol_jogos_cache_time') || 0,
   futebolRssUrl: storage.get('futebol_rss_url') || 'https://www.ogol.com.br/rss/noticias.php',
-  futebolRssProxJogos: storage.get('futebol_rss_prox_jogos') || 'https://www.ogol.com.br/rss/proxjogos.php',
-  futebolRssResultados: storage.get('futebol_rss_resultados') || 'https://www.ogol.com.br/rss/resultados.php',
 
   // UI State
   settingsOpen: false,
@@ -387,25 +383,9 @@ const useStore = create((set, get) => ({
     set({ initialChatMessage: null });
   },
 
-  setFutebolJogosCache: (jogos) => {
-    storage.set('futebol_jogos_cache', jogos);
-    storage.set('futebol_jogos_cache_time', Date.now());
-    set({ futebolJogosCache: jogos, futebolJogosCacheTime: Date.now() });
-  },
-
   setFutebolRssUrl: (url) => {
     storage.set('futebol_rss_url', url);
     set({ futebolRssUrl: url });
-  },
-
-  setFutebolRssProxJogos: (url) => {
-    storage.set('futebol_rss_prox_jogos', url);
-    set({ futebolRssProxJogos: url });
-  },
-
-  setFutebolRssResultados: (url) => {
-    storage.set('futebol_rss_resultados', url);
-    set({ futebolRssResultados: url });
   },
 
   addChatMessage: (message) => {
@@ -479,8 +459,6 @@ const useStore = create((set, get) => ({
         notesContent: storage.get('notes_content') || '',
         weatherCity: storage.get('weather_city') || '',
         futebolRssUrl: storage.get('futebol_rss_url') || 'https://www.ogol.com.br/rss/noticias.php',
-        futebolRssProxJogos: storage.get('futebol_rss_prox_jogos') || 'https://www.ogol.com.br/rss/proxjogos.php',
-        futebolRssResultados: storage.get('futebol_rss_resultados') || 'https://www.ogol.com.br/rss/resultados.php',
         homeSortMethod: storage.get('home_sort_method') || 'manual',
         defaultCategory: storage.get('default_category') || 'all',
         activeCategory: getSessionCategory() || storage.get('default_category') || 'all',

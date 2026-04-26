@@ -3,9 +3,8 @@ import useStore from '../store/useStore';
 
 export function useFutebol() {
   const [noticias, setNoticias] = useState([]);
-  const [jogos, setJogos] = useState([]);
-  const [loading, setLoading] = useState({ noticias: true, jogos: false });
-  const [error, setError] = useState({ noticias: null, jogos: null });
+  const [loading, setLoading] = useState({ noticias: true });
+  const [error, setError] = useState({ noticias: null });
 
   const fetchNoticias = useCallback(async () => {
     setLoading((prev) => ({ ...prev, noticias: true }));
@@ -28,45 +27,9 @@ export function useFutebol() {
     }
   }, []);
 
-  const fetchJogos = useCallback(async (force = false) => {
-    const state = useStore.getState();
-    const cache = state.futebolJogosCache;
-    const cacheTime = state.futebolJogosCacheTime;
-    const urlProx = state.futebolRssProxJogos;
-    const urlRes = state.futebolRssResultados;
-
-    const now = Date.now();
-    const CACHE_DURATION = 10 * 60 * 1000; // Reduzido para 10 minutos (Cache principal na Netlify Function)
-
-    if (!force && cache && cache.length > 0 && now - cacheTime < CACHE_DURATION) {
-      setJogos(cache);
-      return;
-    }
-
-    setLoading((prev) => ({ ...prev, jogos: true }));
-    setError((prev) => ({ ...prev, jogos: null }));
-    try {
-      const url = `/.netlify/functions/futebol-jogos?urlProx=${encodeURIComponent(urlProx)}&urlRes=${encodeURIComponent(urlRes)}`;
-      const response = await fetch(url);
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Falha ao buscar jogos');
-
-      setJogos(data.jogos || []);
-      state.setFutebolJogosCache(data.jogos || []);
-    } catch (err) {
-      setError((prev) => ({ ...prev, jogos: err.message }));
-      if (cache && cache.length > 0) {
-        setJogos(cache);
-      }
-    } finally {
-      setLoading((prev) => ({ ...prev, jogos: false }));
-    }
-  }, []);
-
   useEffect(() => {
     fetchNoticias();
-    fetchJogos(false);
-  }, [fetchNoticias, fetchJogos]);
+  }, [fetchNoticias]);
 
-  return { noticias, jogos, loading, error, fetchNoticias, fetchJogos };
+  return { noticias, loading, error, fetchNoticias };
 }
