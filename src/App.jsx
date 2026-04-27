@@ -88,7 +88,7 @@ export default function App() {
 
                   <div className="hidden md:grid grid-cols-[1fr_420px_1fr] items-center min-h-[250px] px-10 xl:px-20">
                     <div className="flex justify-center">
-                      <div className="shrink-0 origin-center scale-[1.12] xl:scale-[1.22] 2xl:scale-[1.28]">
+                      <div className="shrink-0 origin-center scale-[1.2] xl:scale-[1.3] 2xl:scale-[1.38]">
                         <WeatherWidget />
                       </div>
                     </div>
@@ -98,7 +98,7 @@ export default function App() {
                     </div>
 
                     <div className="flex justify-center">
-                      <div className="shrink-0 origin-center scale-[1.12] xl:scale-[1.22] 2xl:scale-[1.28]">
+                      <div className="shrink-0 origin-center scale-[1.2] xl:scale-[1.3] 2xl:scale-[1.38]">
                         <NotesWidget />
                       </div>
                     </div>
