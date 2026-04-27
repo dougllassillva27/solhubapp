@@ -17,7 +17,8 @@ import ImportBookmarksModal from './components/ImportBookmarksModal';
 import FloatingMenu from './components/FloatingMenu';
 
 export default function App() {
-  const { theme, openSettings, settingsOpen, addSiteOpen, chatOpen, deleteConfirmId, importBookmarksOpen } = useStore();
+  const { theme, settingsOpen, addSiteOpen, chatOpen, deleteConfirmId, importBookmarksOpen } = useStore();
+
   const [isFocusMode, setIsFocusMode] = useState(false);
 
   useEffect(() => {
@@ -26,13 +27,13 @@ export default function App() {
 
   useEffect(() => {
     const { autoSync, syncToken, pullFromCloud, carregarFaviconsDb } = useStore.getState();
+
     if (autoSync && syncToken) {
-      pullFromCloud().catch((err) => console.error('Erro no auto-pull:', err));
+      pullFromCloud().catch((erro) => console.error('Erro no auto-pull:', erro));
     }
-    // Carrega favicons do banco em paralelo (independente do autoSync)
+
     carregarFaviconsDb();
 
-    // Detecta se foi aberto via PWA (tela inicial do celular) ou com parâmetro de foco
     if (
       window.matchMedia('(display-mode: standalone)').matches ||
       window.navigator.standalone ||
@@ -45,21 +46,21 @@ export default function App() {
   useEffect(() => {
     if (settingsOpen || addSiteOpen || chatOpen || importBookmarksOpen || deleteConfirmId) {
       document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
+      return;
     }
+
+    document.body.style.overflow = 'unset';
   }, [settingsOpen, addSiteOpen, chatOpen, importBookmarksOpen, deleteConfirmId]);
 
   return (
     <div className="min-h-screen relative">
-      {/* Star canvas for space theme */}
       <StarCanvas />
 
-      {/* Main content */}
       <div className="relative z-10">
-        {/* Main layout */}
         <div
-          className={`container mx-auto px-4 flex flex-col ${isFocusMode ? 'min-h-screen justify-center' : 'min-h-[85vh]'}`}
+          className={`container mx-auto px-4 flex flex-col ${
+            isFocusMode ? 'min-h-screen justify-center' : 'min-h-[85vh]'
+          }`}
         >
           <div className={`flex-1 flex flex-col ${isFocusMode ? 'justify-center mb-20' : 'pt-8'}`}>
             {!isFocusMode && (
@@ -71,21 +72,30 @@ export default function App() {
                       — sua página inicial pessoal, inteligente e organizada
                     </span>
                   </h1>
+
                   <p className="text-sm md:text-base text-text opacity-60 max-w-2xl mx-auto">
                     Acesse seus sites, organize por categorias, busque mais rápido, acompanhe notícias e use IA em um só
                     lugar.
                   </p>
                 </div>
 
-                <div className="w-full max-w-[1600px] mx-auto px-4 mt-6 mb-8">
-                  <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-center">
-                    <div className="order-2 md:order-1 flex justify-center md:justify-start w-full">
+                <div className="relative w-screen left-1/2 right-1/2 -mx-[50vw] mt-6 mb-8">
+                  <div className="md:hidden flex flex-col items-center gap-4 px-4">
+                    <WeatherWidget />
+                    <Clock />
+                    <NotesWidget />
+                  </div>
+
+                  <div className="hidden md:block relative h-[220px]">
+                    <div className="absolute left-1/4 top-1/2 -translate-x-1/2 -translate-y-1/2">
                       <WeatherWidget />
                     </div>
-                    <div className="order-1 md:order-2 flex justify-center w-full">
+
+                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
                       <Clock />
                     </div>
-                    <div className="order-3 md:order-3 flex justify-center md:justify-end w-full h-full">
+
+                    <div className="absolute left-3/4 top-1/2 -translate-x-1/2 -translate-y-1/2">
                       <NotesWidget />
                     </div>
                   </div>
@@ -107,6 +117,7 @@ export default function App() {
         {!isFocusMode && (
           <>
             <BottomSection />
+
             <footer className="text-center py-6 text-muted text-sm">
               <p>Hubly · Sua página inicial personalizada</p>
             </footer>
@@ -116,7 +127,6 @@ export default function App() {
 
       {!isFocusMode && <FloatingMenu />}
 
-      {/* Modals */}
       <SettingsModal />
       <AddSiteModal />
       <ConfirmModal />
