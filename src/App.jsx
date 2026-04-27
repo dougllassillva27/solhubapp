@@ -79,13 +79,13 @@ export default function App() {
 
                 <div className="w-full max-w-7xl mx-auto px-4 mt-6 mb-8">
                   <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-center">
-                    <div className="order-2 md:order-1 flex justify-center md:justify-start w-full">
+                    <div className="order-2 md:order-1 flex justify-center w-full">
                       <WeatherWidget />
                     </div>
                     <div className="order-1 md:order-2 flex justify-center w-full">
                       <Clock />
                     </div>
-                    <div className="order-3 md:order-3 flex justify-center md:justify-end w-full h-full">
+                    <div className="order-3 md:order-3 flex justify-center w-full h-full">
                       <NotesWidget />
                     </div>
                   </div>
