@@ -32,21 +32,14 @@ export const handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: 'URL obrigatória' }) };
   }
 
-  console.log(`[PROXY-IMG] Iniciando requisição para: ${url}`);
-
   try {
     const urlObj = new URL(url);
-    console.log(`[PROXY-IMG] Hostname alvo: ${urlObj.hostname}`);
 
-    const dnsResult = await dns.lookup(urlObj.hostname).catch((err) => {
-      console.error(`[PROXY-IMG] Erro na resolução DNS:`, err.message);
-      return { address: null };
-    });
-    const address = dnsResult.address;
-    console.log(`[PROXY-IMG] IP Resolvido: ${address}`);
+    // Validação Anti-SSRF rigorosa
+    const dnsResult = await dns.lookup(urlObj.hostname).catch(() => ({ address: null }));
+    const address = dnsResult?.address;
 
     if (address && isPrivateIP(address)) {
-      console.warn(`[PROXY-IMG] SSRF Bloqueado! O domínio resolveu para o IP privado: ${address}`);
       return { statusCode: 403, body: JSON.stringify({ error: 'SSRF bloqueado' }) };
     }
 
@@ -64,21 +57,24 @@ export const handler = async (event) => {
       'Sec-Ch-Ua-Platform': '"Windows"',
     };
 
-    console.log(`[PROXY-IMG] Enviando headers:`, JSON.stringify(fetchHeaders));
-
     const response = await fetch(url, {
       signal: controller.signal,
       headers: fetchHeaders,
-    });
+    }).catch(() => null); // Se a rede do Node falhar, capturamos como nulo
 
     clearTimeout(timeoutId);
 
-    console.log(`[PROXY-IMG] Resposta da origem: ${response.status} ${response.statusText}`);
-
-    if (!response.ok) {
-      const errorBody = await response.text();
-      console.error(`[PROXY-IMG] Body do erro na origem (trecho):`, errorBody.substring(0, 300));
-      return { statusCode: response.status, body: `Erro na origem: ${response.statusText}` };
+    // Se a requisição foi bloqueada pelo Cloudflare/WAF (403/503) ou timeout,
+    // ativamos o fallback delegando o acesso diretamente ao navegador do usuário via 302.
+    if (!response || !response.ok) {
+      return {
+        statusCode: 302,
+        headers: {
+          Location: url,
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+        },
+        body: '',
+      };
     }
 
     const contentType = response.headers.get('content-type') || 'application/octet-stream';
@@ -92,6 +88,11 @@ export const handler = async (event) => {
       body: base64,
     };
   } catch (error) {
-    return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
+    // Fallback de segurança para erros assíncronos não mapeados
+    return {
+      statusCode: 302,
+      headers: { Location: url },
+      body: '',
+    };
   }
 };
