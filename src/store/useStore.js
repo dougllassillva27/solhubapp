@@ -47,6 +47,9 @@ const useStore = create((set, get) => ({
   // Tela Inicial Configs
   homeSortMethod: storage.get('home_sort_method') || 'manual',
 
+  // Comportamento de Links
+  linkTarget: storage.get('link_target') || '_blank',
+
   // Favicons do banco (domain -> favicon_url)
   faviconsDb: storage.get('favicons_db') || {},
 
@@ -444,6 +447,11 @@ const useStore = create((set, get) => ({
     set({ homeSortMethod: method });
   },
 
+  setLinkTarget: (target) => {
+    storage.set('link_target', target);
+    set({ linkTarget: target });
+  },
+
   registerSiteVisit: (id) => {
     const sites = get().sites.map((s) => (s.id === id ? { ...s, lastAccessed: Date.now() } : s));
     storage.set('sites', sites);
@@ -471,6 +479,7 @@ const useStore = create((set, get) => ({
         notesContent: storage.get('notes_content') || '',
         weatherCity: storage.get('weather_city') || '',
         homeSortMethod: storage.get('home_sort_method') || 'manual',
+        linkTarget: storage.get('link_target') || '_blank',
         defaultCategory: storage.get('default_category') || 'all',
         activeCategory: currentActiveCategory,
         syncToken: storage.get('sync_token') || '',

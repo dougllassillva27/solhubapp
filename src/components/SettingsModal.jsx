@@ -175,6 +175,8 @@ export default function SettingsModal() {
     setAutoSync,
     setPendingBookmarks,
     openImportBookmarks,
+    linkTarget,
+    setLinkTarget,
   } = useStore();
 
   const [activeTab, setActiveTab] = useState('appearance');
@@ -436,6 +438,17 @@ export default function SettingsModal() {
                   No modo "Mais Recentes", os sites acessados sobem para o topo automaticamente na aba "Todos". O
                   ordenamento manual (Drag & Drop) será desativado temporariamente nesta aba.
                 </p>
+              </div>
+              <div>
+                <h3 className="text-sm font-medium text-muted mb-3">Comportamento dos Links</h3>
+                <select
+                  value={linkTarget}
+                  onChange={(e) => setLinkTarget(e.target.value)}
+                  className="w-full px-4 py-3 bg-bg border border-border rounded-lg text-text focus:border-accent transition-colors"
+                >
+                  <option value="_blank">Abrir em nova guia (Padrão)</option>
+                  <option value="_self">Abrir na mesma guia</option>
+                </select>
               </div>
             </div>
           )}

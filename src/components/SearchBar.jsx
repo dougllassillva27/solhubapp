@@ -3,8 +3,15 @@ import { Search, X } from 'lucide-react';
 import useStore, { searchProviders } from '../store/useStore';
 
 export default function SearchBar() {
-  const { searchProvider, searchQuery, setSearchQuery, cycleSearchProvider, openChat, setInitialChatMessage } =
-    useStore();
+  const {
+    searchProvider,
+    searchQuery,
+    setSearchQuery,
+    cycleSearchProvider,
+    openChat,
+    setInitialChatMessage,
+    linkTarget,
+  } = useStore();
   const [localQuery, setLocalQuery] = useState('');
   const inputRef = useRef(null);
   const debounceRef = useRef(null);
@@ -40,7 +47,7 @@ export default function SearchBar() {
         setSearchQuery('');
         openChat();
       } else {
-        window.open(provider.url + encodeURIComponent(localQuery.trim()), '_blank');
+        window.open(provider.url + encodeURIComponent(localQuery.trim()), linkTarget);
         setLocalQuery('');
         setSearchQuery('');
       }
@@ -104,7 +111,7 @@ export default function SearchBar() {
                   setSearchQuery('');
                   openChat();
                 } else {
-                  window.open(provider.url + encodeURIComponent(localQuery.trim()), '_blank');
+                  window.open(provider.url + encodeURIComponent(localQuery.trim()), linkTarget);
                   setLocalQuery('');
                   setSearchQuery('');
                 }

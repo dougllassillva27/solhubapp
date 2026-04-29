@@ -38,8 +38,16 @@ const getProxiedUrl = (url) => {
 };
 
 export default function SiteCard({ site, disableDrag }) {
-  const { confirmDeleteSite, openAddSite, setEditingSite, setFaviconDb, syncToken, faviconsDb, registerSiteVisit } =
-    useStore();
+  const {
+    confirmDeleteSite,
+    openAddSite,
+    setEditingSite,
+    setFaviconDb,
+    syncToken,
+    faviconsDb,
+    registerSiteVisit,
+    linkTarget,
+  } = useStore();
   const [showActions, setShowActions] = useState(false);
 
   const domain = getDomain(site.url);
@@ -194,7 +202,7 @@ export default function SiteCard({ site, disableDrag }) {
       return;
     }
     registerSiteVisit(site.id);
-    window.open(site.url, '_blank');
+    window.open(site.url, linkTarget);
   };
 
   const handleImageError = () => {
