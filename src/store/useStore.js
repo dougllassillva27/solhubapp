@@ -455,6 +455,7 @@ const useStore = create((set, get) => ({
   },
 
   importData: (data) => {
+    console.log('>>> [DEBUG] importData INICIADO. Categoria ativa ATUAL:', get().activeCategory);
     const success = storage.importAll(data);
     if (success) {
       // Reload state from storage
@@ -477,6 +478,7 @@ const useStore = create((set, get) => ({
       });
       set({ openAiApiKey: decrypt(storage.get('openai_apikey'), get().syncToken) || '' });
       applyTheme(get().theme);
+      console.log('>>> [DEBUG] importData FINALIZADO. Categoria ativa NOVA:', get().activeCategory);
     }
     return success;
   },
